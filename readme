@@ -1,0 +1,16 @@
+mkdir gin-gorm-blog
+cd gin-gorm-blog
+
+go mod init github.com/yourusername/gin-gorm-blog
+
+go get -u github.com/gin-gonic/gin
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/sqlite
+go get -u github.com/dgrijalva/jwt-go
+go get golang.org/x/crypto
+go get github.com/joho/godotenv
+go mod tidy
+
+mkdir config controllers middleware models routes util
+touch main.go
+touch .env
