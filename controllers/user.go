@@ -19,7 +19,7 @@ func NewUserController(db *gorm.DB) *UserController {
 }
 
 // 用户注册
-func (ctrl *UserController) Resgister(c *gin.Context) {
+func (ctrl *UserController) Register(c *gin.Context) {
 	//绑定请求数据
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {

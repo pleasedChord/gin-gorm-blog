@@ -8,15 +8,15 @@ import (
 )
 
 type User struct {
-	ID        uint      `gorm:"primarykey;comment:'用户ID'"`
-	Username  string    `gorm:"type:varchar(255);not null;comment:'用户名'"`
-	Password  string    `gorm:"type:varchar(255);not null;comment:'用户密码'"` //加密后的
-	Email     string    `gorm:"type:varchar(255);not null;comment:'用户邮箱'"`
+	ID        uint      `gorm:"primarykey;comment:'用户ID'" json:"id"`
+	Username  string    `gorm:"type:varchar(255);unique;not null;comment:'用户名'" json:"username" binding:"required"`
+	Password  string    `gorm:"type:varchar(255);not null;comment:'用户密码'" json:"password"` //加密后的
+	Email     string    `gorm:"type:varchar(255);unique;not null;comment:'用户邮箱'" json:"email"`
 	CreatedAt time.Time `gorm:"comment:'创建时间'"`
 	UpdatedAt time.Time `gorm:"comment:'更新时间'"`
 
-	Posts    []Post    `gorm:"foreignkey:UserId;comment:'用户发布的文章'"`
-	Comments []Comment `gorm:"foreignKey:UserId;comment:'用户发布的评论'"`
+	Posts    []Post    `gorm:"foreignkey:UserId;comment:'用户发布的文章'" json:"posts,omitempty"`
+	Comments []Comment `gorm:"foreignKey:UserId;comment:'用户发布的评论'" json:"Comments,omitempty"`
 }
 
 // db保存密码前，对密码做加密

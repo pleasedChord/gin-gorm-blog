@@ -1,16 +1,207 @@
-mkdir gin-gorm-blog
+Gin-GORM 博客项目 README
+项目概述
+本项目是一个基于 Go 语言的博客系统，使用 Gin 作为 Web 框架，GORM 作为数据库 ORM 工具，实现了用户注册、登录、文章管理、评论管理等功能。项目采用 JWT 进行身份验证，确保接口的安全性。
+
+运行环境
+Go 版本：1.24.4
+数据库：
+SQLite
+
+依赖安装步骤：
+
+克隆项目：
+git clone https://github.com/pleasedChord/gin-gorm-blog.git
 cd gin-gorm-blog
 
-go mod init github.com/yourusername/gin-gorm-blog
-
-go get -u github.com/gin-gonic/gin
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/sqlite
-go get -u github.com/dgrijalva/jwt-go
-go get golang.org/x/crypto
-go get github.com/joho/godotenv
+安装依赖：项目使用 Go Modules 进行依赖管理，只需在项目根目录下执行以下命令即可自动下载并安装所有依赖：
 go mod tidy
 
-mkdir config controllers middleware models routes util
-touch main.go
-touch .env
+启动方式：
+配置环境变量：
+在项目根目录下创建 .env 文件，并配置以下环境变量：
+plaintext
+PORT=8080
+JWT_SECRET=your-secret-key
+
+初始化数据库
+运行以下命令初始化数据库并进行迁移：
+go run main.go
+
+启动项目
+
+在项目根目录下执行以下命令启动服务器：
+go run main.go
+服务器将启动在 http://localhost:8080。
+
+接口测试：
+可以使用 Postman 或其他工具对接口进行测试，以下是一些测试用例和测试结果示例：
+
+1. 用户注册
+   接口地址：POST http://localhost:8080/api/register
+   请求体：
+   json
+   {
+   "username": "testuser",
+   "password": "testpassword",
+   "email": "test@example.com"
+   }
+   测试结果：
+   json
+   {
+   "message": "用户创建成功",
+   "user": {
+   "userId": 1,
+   "userName": "testuser",
+   "email": "test@example.com"
+   }
+   }
+2. 用户登录
+   接口地址：POST http://localhost:8080/api/login
+   请求体：
+   json
+   {
+   "username": "testuser",
+   "password": "testpassword"
+   }
+   测试结果：
+   json
+   {
+   "message": "登录成功",
+   "token": "your_token_here",
+   "user": {
+   "userId": 1,
+   "username": "testuser",
+   "email": "test@example.com"
+   }
+   }
+3. 创建文章
+   接口地址：POST http://localhost:8080/api/post/create
+   请求头：
+   plaintext
+   Authorization: Bearer your_token_here
+   请求体：
+   json
+   {
+   "title": "Test Post",
+   "content": "This is a test post.",
+   "user_id": 1
+   }
+   测试结果：
+   json
+   {
+   "message": "文章创建成功",
+   "postId": 1
+   }
+4. 更新文章
+   接口地址：PUT http://localhost:8080/api/post/updatePost/1
+   请求头：
+   plaintext
+   Authorization: Bearer your_token_here
+   请求体：
+   json
+   {
+   "title": "Updated Test Post",
+   "content": "This is an updated test post.",
+   "user_id": 1
+   }
+   测试结果：
+   json
+   {
+   "message": "修改成功",
+   "post": {
+   "id": 1,
+   "title": "Updated Test Post",
+   "content": "This is an updated test post.",
+   "user_id": 1,
+   "created_at": "2024-01-01T00:00:00Z",
+   "updated_at": "2024-01-01T00:00:00Z",
+   "user": {},
+   "comments": []
+   }
+   }
+5. 删除文章
+   接口地址：DELETE http://localhost:8080/api/post/deletePost/1
+   请求头：
+   plaintext
+   Authorization: Bearer your_token_here
+   测试结果：
+   json
+   {
+   "message": "成功删除"
+   }
+6. 创建评论
+   接口地址：GET http://localhost:8080/api/comment/create
+   请求头：
+   plaintext
+   Authorization: Bearer your_token_here
+   请求体：
+   json
+   {
+   "content": "This is a test comment.",
+   "user_id": 1,
+   "post_id": 1
+   }
+   测试结果：
+   json
+   {
+   "message": "评论成功",
+   "comment": {
+   "id": 1,
+   "content": "This is a test comment.",
+   "user_id": 1,
+   "post_id": 1,
+   "created_at": "2024-01-01T00:00:00Z",
+   "user": {},
+   "post": {}
+   }
+   }
+7. 获取文章列表
+   接口地址：GET http://localhost:8080/api/post/getPosts
+   测试结果：
+   json
+   {
+   "posts": [
+   {
+   "id": 1,
+   "title": "Test Post",
+   "content": "This is a test post.",
+   "user_id": 1,
+   "created_at": "2024-01-01T00:00:00Z",
+   "updated_at": "2024-01-01T00:00:00Z",
+   "user": {},
+   "comments": []
+   }
+   ]
+   }
+8. 获取文章详情
+   接口地址：GET http://localhost:8080/api/post/post/1
+   测试结果：
+   json
+   {
+   "post": {
+   "id": 1,
+   "title": "Test Post",
+   "content": "This is a test post.",
+   "user_id": 1,
+   "created_at": "2024-01-01T00:00:00Z",
+   "updated_at": "2024-01-01T00:00:00Z",
+   "user": {},
+   "comments": []
+   }
+   }
+9. 获取评论列表
+   接口地址：GET http://localhost:8080/api/comment/getComments/1
+   测试结果：
+   json
+   {
+   "message": "获取评论成功",
+   "comments": [
+   {
+   "id": 1,
+   "content": "This is a test comment.",
+   "user_id": 1,
+   "post_id": 1,
+   "created_at": "2024-01-01T00:00:00Z",
+   "user": {},
+   "post": {}
+   }
